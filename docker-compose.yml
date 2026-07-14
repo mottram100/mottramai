@@ -50,15 +50,6 @@ services:
       - n8n_data:/home/node/.n8n
     networks:
       - automation
-      fifo-api:
-    build:
-      context: ./apps/fifo
-    container_name: automation-fifo-api
-    restart: unless-stopped
-    ports:
-      - "8000:8000"
-    networks:
-      - automation
 
   fifo-api:
     build:
