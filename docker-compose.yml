@@ -32,14 +32,12 @@ services:
       DB_POSTGRESDB_DATABASE: ${POSTGRES_DB}
       DB_POSTGRESDB_USER: ${POSTGRES_USER}
       DB_POSTGRESDB_PASSWORD: ${POSTGRES_PASSWORD}
-
       N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
       N8N_HOST: ${N8N_HOST}
       N8N_PORT: 5678
       N8N_PROTOCOL: ${N8N_PROTOCOL}
       N8N_EDITOR_BASE_URL: http://${N8N_HOST}
       WEBHOOK_URL: ${WEBHOOK_URL}
-
       GENERIC_TIMEZONE: ${TZ}
       TZ: ${TZ}
       N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
@@ -48,7 +46,6 @@ services:
       N8N_PERSONALIZATION_ENABLED: "false"
       EXECUTIONS_DATA_PRUNE: "true"
       EXECUTIONS_DATA_MAX_AGE: 336
-
     volumes:
       - n8n_data:/home/node/.n8n
     networks:
@@ -63,12 +60,24 @@ services:
     networks:
       - automation
 
+  fifo-api:
+    build:
+      context: ./apps
+      dockerfile: Dockerfile
+    container_name: automation-fifo-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    networks:
+      - automation
+
   caddy:
     image: caddy:2-alpine
     container_name: automation-caddy
     restart: unless-stopped
     depends_on:
       - n8n
+      - fifo-api
     ports:
       - "80:80"
       - "443:443"
